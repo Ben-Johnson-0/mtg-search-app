@@ -1,28 +1,11 @@
 "use client";
 import { useState } from "react";
 
-/**
- * Returns a <ul> containing all current search parameters
- * @param {Array<{}>} searchParameters - An array of JSON search parameters.
- * @returns a <ul> of search paramters.
- */
-function ParameterDisplay({ searchParameters }: { searchParameters:Array<{}> }){
-    let i = 0;
-    return (
-        <ul>
-            {searchParameters.map((param) => (
-                <li key={i++}>{JSON.stringify(param)}</li>
-            ))}
-        </ul>
-    );
-}
-
 
 /**
  * @returns A div containing multiple search parameter fields, a current search parameters display, and a Search button.
  */
 export default function SearchGUI() {
-    // let searchParams = [{ "example": 1 }, { "example": 2 }, { "example": 3 }];
     const [searchParams, setSearchParams] = useState<{}[]>([]);
 
     /**
@@ -47,6 +30,23 @@ export default function SearchGUI() {
         );
     }
 
+    /**
+     * Returns a unordered list containing all current search parameters
+     * @returns an unordered list of search paramters.
+     */
+    function ParameterDisplay() {
+        let i = 0;
+        return (
+            <ul>
+                {searchParams.map((param) => (
+                    <li key={i++}>{JSON.stringify(param)}
+                        <button onClick={(e) => setSearchParams(searchParams.toSpliced(searchParams.indexOf(param), 1))}>Remove</button>
+                    </li>
+                ))}
+            </ul>
+        );
+    }
+
     return (
         <div className= "border-[5px]">
             <div>
@@ -62,7 +62,7 @@ export default function SearchGUI() {
             </div>
             <div>
                 <h1>Current Parameters:</h1>
-                <ParameterDisplay searchParameters={searchParams} />
+                <ParameterDisplay />
             </div>
         </div>
     );

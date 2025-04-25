@@ -1,12 +1,59 @@
 import Card from "./Card"
+import MultiCardDisplay from "./MultiCardDisplay";
 import SearchGUI from "./SearchGUI"
 
-export default function Home() {
+const { MongoClient } = require("mongodb");
+
+// Config
+const mongoIP = "192.168.1.75";
+const mongoPort = 27017;
+const username = "viewer";
+const password = "simViewer2";
+const authDb = "mtg";
+const targetDb = "mtg";
+const collectionName = "similarity";
+
+// Card Data prototype
+type CardData = {
+  image_uris: { normal: string };
+  name: string;
+}
+
+// Connection URI
+const uri = `mongodb://${username}:${password}@${mongoIP}:${mongoPort}/?authSource=${authDb}`;
+
+async function fetchCards() {
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db(targetDb);
+    const collection = db.collection(collectionName);
+
+    const doc : CardData = await collection.findOne();
+    console.log("Found document:", doc);
+    return [doc];
+
+  } catch (err) {
+    console.error("MongoDB error:", err);
+  } finally {
+    await client.close();
+  }
+
+  console.log("Failed to retrieve any documents.");
+  return [];
+}
+
+
+export default async function Home() {
+  const cards = await fetchCards();
+
   return (
     <div>
       <h1>example text</h1>
       <SearchGUI />
       <Card img="https://cards.scryfall.io/normal/front/a/3/a3da3387-454c-4c09-b78f-6fcc36c426ce.jpg" name="example" />
+      <MultiCardDisplay cards={cards} />
     </div>
   );
 }

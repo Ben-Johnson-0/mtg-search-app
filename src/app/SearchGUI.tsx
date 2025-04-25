@@ -52,7 +52,7 @@ export default function SearchGUI() {
     }
 
     return (
-        <div className= "border-[5px]">
+        <div className="border-[5px] border-transparent">
             <div>
                 <h1 className="text-2xl font-bold">Search Parameters</h1>
                 <SearchParam paramTitle="Card Name" paramId="name" inputType="text" />

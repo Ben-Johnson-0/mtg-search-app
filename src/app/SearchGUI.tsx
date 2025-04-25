@@ -38,11 +38,15 @@ export default function SearchGUI() {
         let i = 0;
         return (
             <ul>
-                {searchParams.map((param) => (
-                    <li key={i++}>{JSON.stringify(param)}
-                        <button onClick={(e) => setSearchParams(searchParams.toSpliced(searchParams.indexOf(param), 1))}>Remove</button>
+                {searchParams.length === 0 ? (
+                    <li>None</li>
+                ) : (
+                searchParams.map((param) => (
+                    <li key={i++}>
+                        <button onClick={(e) => setSearchParams(searchParams.toSpliced(searchParams.indexOf(param), 1))}>[Remove]</button>
+                        {" " + JSON.stringify(param)}
                     </li>
-                ))}
+                )))}
             </ul>
         );
     }
@@ -50,7 +54,7 @@ export default function SearchGUI() {
     return (
         <div className= "border-[5px]">
             <div>
-                <h1>Search Parameters</h1>
+                <h1 className="text-2xl font-bold">Search Parameters</h1>
                 <SearchParam paramTitle="Card Name" paramId="name" inputType="text" />
                 <SearchParam paramTitle="Rules Text" paramId="oracle_text" inputType="text" />
                 <SearchParam paramTitle="Expansion" paramId="expansion" inputType="text" />
@@ -60,8 +64,9 @@ export default function SearchGUI() {
                 <SearchParam paramTitle="Subtypes" paramId="subtypes" inputType="text" />
                 <SearchParam paramTitle="Mana Value" paramId="mv" inputType="number" />
             </div>
+            <br/>
             <div>
-                <h1>Current Parameters:</h1>
+                <h1 className="text-2xl font-bold">Current Parameters</h1>
                 <ParameterDisplay />
             </div>
         </div>

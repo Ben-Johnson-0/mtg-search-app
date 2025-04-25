@@ -1,6 +1,7 @@
 import Card from "./Card"
 
 type CardData = {
+    _id: number;
     image_uris: {normal:string};
     name: string;
 }
@@ -17,7 +18,11 @@ export default function MultiCardDisplay({ cards }: { cards:Array<CardData> }) {
         <div>
             {
             cards.map((card) => (
-                <Card img = {card["image_uris"]["normal"]} name = {card["name"]} />
+                <Card 
+                    key = {card["_id"]}
+                    img = {card["image_uris"]["normal"]} 
+                    name = {card["name"]}
+                />
             ))
             }
         </div>

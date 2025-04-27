@@ -31,9 +31,9 @@ async function fetchCards() {
     const db = client.db(targetDb);
     const collection = db.collection(collectionName);
 
-    const doc : CardData = await collection.findOne();
+    const doc: Array<CardData> = await collection.find({ "cmc": {"$gte": 10}}).toArray(); // Placeholder query
     console.log("Found document:", doc);
-    return [doc];
+    return doc;
 
   } catch (err) {
     console.error("MongoDB error:", err);

@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import Card from "./Card"
 
 type CardData = {
@@ -11,18 +12,16 @@ type CardData = {
  * Display widget for a group of cards
  */
 export default function MultiCardDisplay({ cards }: { cards:Array<CardData> }) {
-    let page_num:number = 0;
-    const page_length = 60;
-
-    if (!cards || !Array.isArray(cards)) return <div>Loading...</div>;
-    console.log("Cards", cards)
-    console.log("Cards.length", cards.length)
+    const [page_num, setPageNum] = useState(0)
+    const page_length: number = 60;
+    const max_pages: number = Math.ceil(cards.length / page_length);
 
     return (
         <div>
             <h1>{cards.length} Results</h1>
-            <h1>Page {page_num+1} of {Math.ceil(cards.length / page_length)}</h1>
-            <button onClick={(e) => page_num++}>Next</button>
+            <h1>Page {page_num+1} of {max_pages}</h1>
+            <button onClick={() => setPageNum(page_num - 1)} disabled={page_num === 0}>Prev</button>
+            <button onClick={() => setPageNum(page_num + 1)} disabled={page_num >= max_pages-1}>Next</button>
             {
                 cards.slice(page_num * page_length, (page_num + 1) * page_length).map((card) => (
                 <Card 

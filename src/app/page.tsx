@@ -1,16 +1,9 @@
-// Home Page
-import MultiCardDisplay from "./MultiCardDisplay";
-import SearchGUI from "./SearchGUI"
-import fetchCards from "./fetch"
+// Home page
+import CardSearchPage from "./CardSearchPage";
 
 
 export default async function Home() {
-  const cards = await fetchCards();
-
   return (
-    <div>
-      <SearchGUI />
-      <MultiCardDisplay cards={cards} />
-    </div>
+    <CardSearchPage />
   );
 }

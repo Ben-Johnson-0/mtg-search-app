@@ -1,3 +1,4 @@
+'use server';
 const { MongoClient } = require("mongodb");
 
 // Config
@@ -10,7 +11,7 @@ const targetDb = "mtg";
 const collectionName = "similarity";
 
 // Card Data prototype
-type CardData = {
+export type CardData = {
   _id: number;
   image_uris: { normal: string };
   name: string;
@@ -19,7 +20,7 @@ type CardData = {
 // Connection URI
 const uri = `mongodb://${username}:${password}@${mongoIP}:${mongoPort}/?authSource=${authDb}`;
 
-export default async function fetchCards() {
+export async function fetchCards(query: Record<string, any>) {
   const client = new MongoClient(uri);
 
   try {
@@ -27,7 +28,7 @@ export default async function fetchCards() {
     const db = client.db(targetDb);
     const collection = db.collection(collectionName);
 
-    const doc: Array<CardData> = await collection.find({ "cmc": {"$gte": 10}}).toArray(); // Placeholder query
+    const doc: Array<CardData> = await collection.find(query).toArray();
     return doc;
 
   } catch (err) {

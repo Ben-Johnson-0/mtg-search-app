@@ -1,12 +1,8 @@
 'use client';
 import { useState } from 'react';
 import Card from "./Card"
+import { type CardData } from "./fetch"
 
-type CardData = {
-    _id: number;
-    image_uris: {normal:string};
-    name: string;
-}
 
 /*
  * Display widget for a group of cards

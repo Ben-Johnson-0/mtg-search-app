@@ -13,29 +13,22 @@ interface SearchGUIProps {
     onSearch: (query: Record<string, any>) => void;
 }
 
-function buildQuery(params: SearchParam[]): Record<string, any> {
-    const query: Record<string, any> = {};
-
-    for (const { field, operator, clause, value } of params) {
-        if (!(query.hasOwnProperty(clause))) {
-            query[clause] = []
-        }
-        query[clause].push({ [field]: { [operator]: value } });
-    }
-
-    return(query);
-}
-
 /**
  * @returns A div containing multiple search parameter fields, a current search parameters display, and a Search button.
  */
 export default function SearchGUI({ onSearch } : SearchGUIProps) {
     const [searchParams, setSearchParams] = useState<SearchParam[]>([]);
 
-    function handleSearchClick() {
+    function handleSearchClick() {        
         const query: Record<string, any> = {};
-        for (const {field, operator, value} of searchParams) {
-            query[field] = {[operator]: value};
+
+        for (const { field, operator, clause, value } of searchParams) {
+            if (!(query.hasOwnProperty(clause))) {
+                query[clause] = []
+            }
+            // Make the regex case-insensitive
+            const entry = (operator === "$regex") ? { [field]: { [operator]: value, "$options": "i" }} : { [field]: { [operator]: value } }
+            query[clause].push(entry);
         }
         onSearch(query);
     }
@@ -44,19 +37,43 @@ export default function SearchGUI({ onSearch } : SearchGUIProps) {
      * Returns a div containing a Label, a text input, and an Add button. Used for adding search parameters.
      * @param {string} paramTitle - The text of the label.
      * @param {string} paramId - The unique ID for the parameter. (i.e. 'name' for searching via name)
+     * @param {string} inputType - The type of input. (i.e. 'text' or 'number')
+     * @param {string} defaultOp - The default operator used for searching with this parameter field. (i.e. '$regex' for text or '$eq' for a number)
      * @returns a div with a label, text input, and Add button
      */
-    function SearchParamEntry({ paramTitle, paramId, inputType }: { paramTitle: string, paramId: string, inputType: string }) {
+    function SearchParamEntry({ paramTitle, paramId, inputType, defaultOp }: { paramTitle: string, paramId: string, inputType: string, defaultOp: string }) {
+        const defaultCompare : string = defaultOp
         const [inputVal, setInputVal] = useState("");
+        const [clause, setClause] = useState("$and");
+        const [compare, setCompare] = useState(defaultCompare);
 
         function addParameter() {
-            const newParam: SearchParam = { "field": paramId, "operator": "$eq", "clause": "$and", "value": inputVal }
+            let value: string | number = inputVal
+            if (inputType === "number") { value = Number(inputVal) }
+            // if (compare === "$regex") { value = convertToRegex(inputVal) }
+            const newParam: SearchParam = { "field": paramId, "operator": compare, "clause": clause, "value": value }
             setSearchParams([...searchParams, newParam]);
         }
         return (
             <div>
                 <label htmlFor={paramId}>{paramTitle}:</label><br />
-                <input type={inputType} id={paramId} name={paramId} onChange={(e) => setInputVal(e.target.value)} />
+                <select name={paramId + "ClauseSelect"} id={paramId + "ClauseSelect"} onChange={(e) => setClause(e.target.value)}>
+                    <option value="$and">And</option>
+                    <option value="$or">Or</option>
+                    <option value="$not">Not</option>
+                </select>
+                {(inputType === "number") ? (
+                    <select name={paramId + "CompareSelect"} id={paramId + "CompareSelect"} onChange={(e) => setCompare(e.target.value)}>
+                        <option value="$eq">{"=="}</option>
+                        <option value="$lt">{"<"}</option>
+                        <option value="$lte">{"<="}</option>
+                        <option value="$gt">{">"}</option>
+                        <option value="$gte">{">="}</option>
+                    </select>
+                ) : null}
+                <input type={inputType} id={paramId} name={paramId} 
+                    onChange={(e) => setInputVal(e.target.value)} 
+                    size={(inputType === "number") ? 13 : 20}/>
                 <button onClick={addParameter}>Add</button><br />
             </div>
         );
@@ -87,14 +104,15 @@ export default function SearchGUI({ onSearch } : SearchGUIProps) {
         <div className="border-[5px] border-transparent">
             <div>
                 <h1 className="text-2xl font-bold">Search Parameters</h1>
-                <SearchParamEntry paramTitle="Card Name" paramId="name" inputType="text" />
-                <SearchParamEntry paramTitle="Rules Text" paramId="oracle_text" inputType="text" />
-                <SearchParamEntry paramTitle="Expansion" paramId="expansion" inputType="text" />
-                <SearchParamEntry paramTitle="Colors" paramId="colors" inputType="text" />
-                <SearchParamEntry paramTitle="Color Identity" paramId="colorId" inputType="text" />
-                <SearchParamEntry paramTitle="Types" paramId="types" inputType="text" />
-                <SearchParamEntry paramTitle="Subtypes" paramId="subtypes" inputType="text" />
-                <SearchParamEntry paramTitle="Mana Value" paramId="cmc" inputType="number" />
+                <SearchParamEntry paramTitle="Card Name" paramId="name" inputType="text" defaultOp="$regex"/>
+                <SearchParamEntry paramTitle="Rules Text" paramId="oracle_text" inputType="text" defaultOp="$regex" />
+                <SearchParamEntry paramTitle="Expansion" paramId="expansion" inputType="text" defaultOp="$regex" />
+                <SearchParamEntry paramTitle="Colors" paramId="colors" inputType="text" defaultOp="$in" />
+                <SearchParamEntry paramTitle="Color Identity" paramId="colorId" inputType="text" defaultOp="$in" />
+                {/* Types and subtypes aren't yet separated in the DB yet */}
+                <SearchParamEntry paramTitle="Types" paramId="type_line" inputType="text" defaultOp="$regex" />
+                <SearchParamEntry paramTitle="Subtypes" paramId="type_line" inputType="text" defaultOp="$regex" />
+                <SearchParamEntry paramTitle="Mana Value" paramId="cmc" inputType="number" defaultOp="$eq" />
                 <br/>
                 <button onClick={handleSearchClick} className="text-2xl font-bold">Search</button>
             </div>

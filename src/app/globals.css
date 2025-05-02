@@ -36,3 +36,14 @@ button {
 button:hover {
   background: #4c4b4b;
 }
+
+select {
+  padding: 3px;
+  color: var(--foreground);
+  background: #3b3939;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+select:hover {
+  background: #4c4b4b;
+}

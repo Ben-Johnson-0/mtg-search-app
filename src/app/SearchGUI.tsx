@@ -13,6 +13,45 @@ interface SearchGUIProps {
     onSearch: (query: Record<string, any>) => void;
 }
 
+/** Create a list of SearchParams for each color in the input string
+ * @returns An array of SearchParams
+ */
+function handleColorInput(paramId: string, operator: string, clause: string, value: string): Array<SearchParam> {
+    const colorDict: Record<string, any> = { "red": "R", "white": "W", "blue": "U", "green": "G", "black": "B", "colorless": "C", "r": "R", "w": "W", "u": "U", "g": "G", "b": "B", "c": "C" };
+    const colors = value
+        .toLowerCase()
+        .split(" ")
+        .map((c) => colorDict[c])
+        .filter(Boolean);
+
+    let parameters: Array<SearchParam> = [];
+    for (const color of colors) {
+        const newParam: SearchParam = { "field": paramId, "operator": operator, "clause": clause, "value": (color === "C") ? [] : [color] }
+        parameters.push(newParam);
+    }
+    return parameters;
+}
+
+/** Create a list of SearchParams for each word in the search term. Words in "'s or /'s will remained grouped
+ * @returns An array of SearchParams
+ */
+function handleTextInput(paramId: string, operator: string, clause: string, value: string): Array<SearchParam> {
+    const regex: RegExp = /(?![^"/]*["/]) /;
+    const matches = value.split(regex);
+    const words = matches.map(token =>
+        ((token.startsWith('"') && token.endsWith('"')) || (token.startsWith('/') && token.endsWith('/')))
+            ? token.slice(1, -1) // remove quotes or slashes
+            : token
+    );
+
+    let parameters: Array<SearchParam> = [];
+    for (const word of words) {
+        const newParam: SearchParam = { "field": paramId, "operator": operator, "clause": clause, "value": word }
+        parameters.push(newParam);
+    }
+    return parameters;
+}
+
 /**
  * @returns A div containing multiple search parameter fields, a current search parameters display, and a Search button.
  */
@@ -48,11 +87,16 @@ export default function SearchGUI({ onSearch } : SearchGUIProps) {
         const [compare, setCompare] = useState(defaultCompare);
 
         function addParameter() {
-            let value: string | number = inputVal
-            if (inputType === "number") { value = Number(inputVal) }
-            // if (compare === "$regex") { value = convertToRegex(inputVal) }
-            const newParam: SearchParam = { "field": paramId, "operator": compare, "clause": clause, "value": value }
-            setSearchParams([...searchParams, newParam]);
+            if (inputType === "number") {
+                const newParam: SearchParam = { "field": paramId, "operator": compare, "clause": clause, "value": Number(inputVal) }
+                setSearchParams([...searchParams, newParam]);
+            } else if (paramId === "colors" || paramId === "color_identity") {
+                const newParams: Array<SearchParam> = handleColorInput(paramId, compare, clause, inputVal)
+                setSearchParams(searchParams.concat(newParams));
+            } else {
+                const newParams: Array<SearchParam> = handleTextInput(paramId, compare, clause, inputVal)
+                setSearchParams(searchParams.concat(newParams));
+            }
         }
         return (
             <div>
@@ -108,10 +152,8 @@ export default function SearchGUI({ onSearch } : SearchGUIProps) {
                 <SearchParamEntry paramTitle="Rules Text" paramId="oracle_text" inputType="text" defaultOp="$regex" />
                 <SearchParamEntry paramTitle="Expansion" paramId="expansion" inputType="text" defaultOp="$regex" />
                 <SearchParamEntry paramTitle="Colors" paramId="colors" inputType="text" defaultOp="$in" />
-                <SearchParamEntry paramTitle="Color Identity" paramId="colorId" inputType="text" defaultOp="$in" />
-                {/* Types and subtypes aren't yet separated in the DB yet */}
+                <SearchParamEntry paramTitle="Color Identity" paramId="color_identity" inputType="text" defaultOp="$in" />
                 <SearchParamEntry paramTitle="Types" paramId="type_line" inputType="text" defaultOp="$regex" />
-                <SearchParamEntry paramTitle="Subtypes" paramId="type_line" inputType="text" defaultOp="$regex" />
                 <SearchParamEntry paramTitle="Mana Value" paramId="cmc" inputType="number" defaultOp="$eq" />
                 <br/>
                 <button onClick={handleSearchClick} className="text-2xl font-bold">Search</button>

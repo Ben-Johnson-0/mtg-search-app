@@ -9,10 +9,6 @@ interface SearchParam {
     value: any;
 }
 
-interface SearchGUIProps {
-    onSearch: (query: Record<string, any>) => void;
-}
-
 /** Takes a SearchParam and converts it to a user-readable string. */
 function searchParamToString(param: SearchParam): string {
     const opDict:Record<string, string> = {"$eq": "==", "$lt":"<", "$lte":"<=", "$gt":">", "$gte":">=", "$regex":"matches", "$in":"has"};
@@ -59,10 +55,15 @@ function handleTextInput(paramId: string, operator: string, clause: string, valu
     return parameters;
 }
 
+interface SearchGUIProps {
+    onSearch: (query: Record<string, any>) => void;
+    className: string;
+}
+
 /**
  * @returns A div containing multiple search parameter fields, a current search parameters display, and a Search button.
  */
-export default function SearchGUI({ onSearch } : SearchGUIProps) {
+export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
     const [searchParams, setSearchParams] = useState<SearchParam[]>([]);
 
     function handleSearchClick() {        
@@ -155,7 +156,7 @@ export default function SearchGUI({ onSearch } : SearchGUIProps) {
     }
 
     return (
-        <div className="border-[5px] border-transparent">
+        <div className={className}>
             <div>
                 <h1 className="text-2xl font-bold">Search Parameters</h1>
                 <SearchParamEntry paramTitle="Card Name" paramId="name" inputType="text" defaultOp="$regex"/>

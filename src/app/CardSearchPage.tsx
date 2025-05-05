@@ -14,9 +14,9 @@ export default function CardSearchPage() {
     }
 
     return (
-        <div>
-            <SearchGUI onSearch = {handleSearch}/>
-            <MultiCardDisplay cards = {cards}/>
+        <div className = "flex">
+            <SearchGUI onSearch={handleSearch} className="border-[5px] border-transparent w-96"/>
+            <MultiCardDisplay cards={cards} className="flex-1" />
         </div>
     );
 }

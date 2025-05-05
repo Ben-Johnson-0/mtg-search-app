@@ -130,6 +130,7 @@ export default function SearchGUI({ onSearch } : SearchGUIProps) {
     function ParameterDisplay() {
         let i = 0;
         return (
+            <div>
             <ul>
                 {searchParams.length === 0 ? (
                     <li>None</li>
@@ -141,6 +142,8 @@ export default function SearchGUI({ onSearch } : SearchGUIProps) {
                         </li>
                     )))}
             </ul>
+            <button onClick={() => setSearchParams([])}>Clear All</button>
+            </div>
         );
     }
 

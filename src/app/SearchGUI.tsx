@@ -13,6 +13,13 @@ interface SearchGUIProps {
     onSearch: (query: Record<string, any>) => void;
 }
 
+/** Takes a SearchParam and converts it to a user-readable string. */
+function searchParamToString(param: SearchParam): string {
+    const opDict:Record<string, string> = {"$eq": "==", "$lt":"<", "$lte":"<=", "$gt":">", "$gte":">=", "$regex":"matches", "$in":"has"};
+    const clauseDict:Record<string, string> = {"$and": "AND", "$not":"NOT", "$or":"OR"};
+    return (clauseDict[param['clause']] + " " + param['field'] + " " + opDict[param['operator']] + " '" + param['value'] + "'");
+}
+
 /** Create a list of SearchParams for each color in the input string
  * @returns An array of SearchParams
  */
@@ -138,7 +145,7 @@ export default function SearchGUI({ onSearch } : SearchGUIProps) {
                     searchParams.map((param) => (
                         <li key={i++}>
                             <button onClick={(e) => setSearchParams(searchParams.toSpliced(searchParams.indexOf(param), 1))}>[Remove]</button>
-                            {" " + JSON.stringify(param)}
+                            {" " + searchParamToString(param)}
                         </li>
                     )))}
             </ul>

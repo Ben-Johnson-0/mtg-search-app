@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
+import { Filter } from "mongodb";
+import { type CardData } from "./fetch"
 
 
 interface SearchParam {
     field: string;
     operator: string;
     clause: string;
-    value: any;
+    value: string | string[] | Number;
 }
 
 /** Takes a SearchParam and converts it to a user-readable string. */
@@ -20,14 +22,14 @@ function searchParamToString(param: SearchParam): string {
  * @returns An array of SearchParams
  */
 function handleColorInput(paramId: string, operator: string, clause: string, value: string): Array<SearchParam> {
-    const colorDict: Record<string, any> = { "red": "R", "white": "W", "blue": "U", "green": "G", "black": "B", "colorless": "C", "r": "R", "w": "W", "u": "U", "g": "G", "b": "B", "c": "C" };
+    const colorDict: Record<string, string> = { "red": "R", "white": "W", "blue": "U", "green": "G", "black": "B", "colorless": "C", "r": "R", "w": "W", "u": "U", "g": "G", "b": "B", "c": "C" };
     const colors = value
         .toLowerCase()
         .split(" ")
         .map((c) => colorDict[c])
         .filter(Boolean);
 
-    let parameters: Array<SearchParam> = [];
+    const parameters: Array<SearchParam> = [];
     for (const color of colors) {
         const newParam: SearchParam = { "field": paramId, "operator": operator, "clause": clause, "value": (color === "C") ? [] : [color] }
         parameters.push(newParam);
@@ -47,7 +49,7 @@ function handleTextInput(paramId: string, operator: string, clause: string, valu
             : token
     );
 
-    let parameters: Array<SearchParam> = [];
+    const parameters: Array<SearchParam> = [];
     for (const word of words) {
         const newParam: SearchParam = { "field": paramId, "operator": operator, "clause": clause, "value": word }
         parameters.push(newParam);
@@ -56,7 +58,7 @@ function handleTextInput(paramId: string, operator: string, clause: string, valu
 }
 
 interface SearchGUIProps {
-    onSearch: (query: Record<string, any>) => void;
+    onSearch: (query: Filter<CardData>) => void;
     className: string;
 }
 
@@ -67,7 +69,7 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
     const [searchParams, setSearchParams] = useState<SearchParam[]>([]);
 
     function handleSearchClick() {        
-        const query: Record<string, any> = {};
+        const query: Filter<CardData> = {};
 
         for (const { field, operator, clause, value } of searchParams) {
             if (!(query.hasOwnProperty(clause))) {
@@ -145,7 +147,7 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
                 ) : (
                     searchParams.map((param) => (
                         <li key={i++}>
-                            <button onClick={(e) => setSearchParams(searchParams.toSpliced(searchParams.indexOf(param), 1))}>[Remove]</button>
+                            <button onClick={() => setSearchParams(searchParams.toSpliced(searchParams.indexOf(param), 1))}>[Remove]</button>
                             {" " + searchParamToString(param)}
                         </li>
                     )))}

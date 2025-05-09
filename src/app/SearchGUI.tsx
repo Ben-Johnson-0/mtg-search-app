@@ -8,7 +8,7 @@ interface SearchParam {
     field: string;
     operator: string;
     clause: string;
-    value: string | string[] | Number;
+    value: string | string[] | number;
 }
 
 /** Takes a SearchParam and converts it to a user-readable string. */

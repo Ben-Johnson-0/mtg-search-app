@@ -19,7 +19,7 @@ export type CardData = {
   color_identity: string[];
   colors: string[];
   flavor_text: string;
-  image_uris: {normal: string};
+  image_uris: { normal: string } | Array<{ normal: string }>;
   mana_cost: string;
   multifaced: boolean;
   name: string;

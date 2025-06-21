@@ -27,9 +27,8 @@ export default function MultiCardDisplay({ cards, className }: { cards:Array<Car
             {
                 cards.slice(page_num * page_length, (page_num + 1) * page_length).map((card) => (
                 <Card 
-                    key = {card["_id"]}
-                    img={card["image_uris"] ? (card["image_uris"]["normal"]) : ("https://cards.scryfall.io/large/front/a/3/a3da3387-454c-4c09-b78f-6fcc36c426ce.jpg")} 
-                    name = {card["name"]}
+                    key = {card._id}
+                    card = {card}
                 />
             ))
             }

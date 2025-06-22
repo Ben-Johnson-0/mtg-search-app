@@ -27,7 +27,7 @@ export default function Card({card}: {card:CardData}) {
 
 
     return (
-        <div className="relative inline-block min-w-[200px] min-h-[400px]">
+        <div className="relative inline-block min-w-[220px] min-h-[300px]">
             <img 
                 src={currentImage}
                 alt={card.name}

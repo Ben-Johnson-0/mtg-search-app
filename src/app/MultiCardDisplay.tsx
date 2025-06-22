@@ -23,7 +23,7 @@ export default function MultiCardDisplay({ cards, className }: { cards:Array<Car
                 <button onClick={() => setPageNum(page_num + 1)} disabled={page_num >= max_pages-1}>Next</button>
             </div>
             <div className="flex-1 flex justify-left">
-                <div className="grid grid-cols-4">
+                <div className="grid grid-cols-[repeat(auto-fit,_minmax(220px,_1fr))] xl:grid-cols-5 w-full">
             {
                 cards.slice(page_num * page_length, (page_num + 1) * page_length).map((card) => (
                 <Card 

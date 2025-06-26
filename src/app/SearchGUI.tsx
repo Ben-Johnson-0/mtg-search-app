@@ -69,16 +69,34 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
     const [searchParams, setSearchParams] = useState<SearchParam[]>([]);
 
     function handleSearchClick() {        
-        const query: Filter<CardData> = {};
-
+        const query: Filter<CardData> = {"$and":[], "$or":[]};
+        
         for (const { field, operator, clause, value } of searchParams) {
-            if (!(query.hasOwnProperty(clause))) {
-                query[clause] = []
+            let operator_subquery = {[operator]: value};
+
+            // Make regex-based searches case-insensitive
+            if (operator === "$regex") {
+                operator_subquery['$options'] = "i";
             }
-            // Make the regex case-insensitive
-            const entry = (operator === "$regex") ? { [field]: { [operator]: value, "$options": "i" }} : { [field]: { [operator]: value } }
-            query[clause].push(entry);
+
+            // $not isn't a top level operator like $or and $and, so they need to be handled differently
+            if (clause === "$not") {
+                operator_subquery = { "$not": operator_subquery };
+                query["$and"].push({ [field]: operator_subquery });
+            }
+
+            // $or and $and operators
+            else {
+                query[clause].push({ [field]: operator_subquery });
+            }
         }
+
+        // Delete unused $and and $or
+        if (query.$and.length === 0)
+            delete query.$and
+        if (query.$or.length === 0)
+            delete query.$or
+
         onSearch(query);
     }
 

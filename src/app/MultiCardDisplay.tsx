@@ -10,6 +10,7 @@ export default function MultiCardDisplay({ cards, className }: { cards:Array<Car
     const [page_num, setPageNum] = useState(0)
     const page_length: number = 60;
     useEffect(() => {setPageNum(0);}, [cards]);     // Reset page number on cards change
+    useEffect(() => { window.scrollTo(0, 0);}, [page_num]);     // Reset scroll on page_num change
     const max_pages: number = Math.ceil(cards.length / page_length);
 
     return (

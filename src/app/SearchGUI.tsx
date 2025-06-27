@@ -58,7 +58,7 @@ function handleTextInput(paramId: string, operator: string, clause: string, valu
 }
 
 interface SearchGUIProps {
-    onSearch: (query: Filter<CardData>) => void;
+    onSearch: (pipeline: Filter<CardData>[]) => void;
     className: string;
 }
 
@@ -67,8 +67,13 @@ interface SearchGUIProps {
  */
 export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
     const [searchParams, setSearchParams] = useState<SearchParam[]>([]);
+    const [sortField, setSortField] = useState("name");
+    const [sortDirection, setSortDirection] = useState("1");
 
-    function handleSearchClick() {        
+    function handleSearchClick() {
+        // Aggregation pipeline
+        let pipeline = [];
+
         const query: Filter<CardData> = {"$and":[], "$or":[]};
         
         for (const { field, operator, clause, value } of searchParams) {
@@ -97,7 +102,38 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
         if (query.$or.length === 0)
             delete query.$or
 
-        onSearch(query);
+        // Push the query portion to the aggregation pipeline
+        pipeline.push( {$match : query} );
+
+        // Rarity Sort Order Pipeline
+        if (sortField === "rarity") {
+            pipeline.push({
+                $addFields: {
+                    rarityOrder: {
+                        $switch: {
+                            branches: [
+                                { case: { $eq: ["$rarity", "common"] }, then: 0 },
+                                { case: { $eq: ["$rarity", "uncommon"] }, then: 1 },
+                                { case: { $eq: ["$rarity", "rare"] }, then: 2 },
+                                { case: { $eq: ["$rarity", "mythic"] }, then: 3 }
+                            ],
+                            default: 999
+                        }
+                    }
+                }
+            }, {
+                $sort: { rarityOrder: Number(sortDirection) } 
+            });
+        }
+
+        // Default Sort Order Pipeline
+        else {
+            pipeline.push(
+                { $sort: { [sortField]: Number(sortDirection) }}
+            );
+        }
+
+        onSearch(pipeline);
     }
 
     /**
@@ -175,6 +211,27 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
         );
     }
 
+    function SortOrderSelector() {
+        return (
+            <div>
+                <select name="sort_order" id="sort_order" onChange={(e) => setSortField(e.target.value)} value={sortField}>
+                    <option value="name">Name</option>
+                    <option value="rarity">Rarity</option>
+                    <option value="similarity_id">Similarity ID</option>
+                    <option value="cmc">Mana Value</option>
+                    <option value="released_at">Release Date</option>
+                    <option value="type_line">Type</option>
+                    <option value="power">Power</option>
+                    <option value="toughness">Toughness</option>
+                </select>
+                <select name="sort_direction" id="sort_direction" onChange={(e) => setSortDirection(e.target.value)} value={sortDirection}>
+                    <option value="1">Ascending</option>
+                    <option value="-1">Descending</option>
+                </select>
+            </div>
+        );
+    }
+
     return (
         <div className={className}>
             <div>
@@ -189,6 +246,9 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
                 <SearchParamEntry paramTitle="Expansion/Set" paramId="set_name" inputType="text" defaultOp="$eq" />
                 <SearchParamEntry paramTitle="Flavor Text" paramId="flavor_text" inputType="text" defaultOp="$regex" />
                 <SearchParamEntry paramTitle="Artist" paramId="artist" inputType="text" defaultOp="$regex" />
+                <br/>
+                <h1 className="text-2xl font-bold">Sort Order</h1>
+                <SortOrderSelector />
                 <br/>
                 <button onClick={handleSearchClick} className="text-2xl font-bold">Search</button>
             </div>

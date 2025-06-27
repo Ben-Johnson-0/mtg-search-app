@@ -9,8 +9,8 @@ import { Filter } from "mongodb";
 export default function CardSearchPage() {
     const [cards, setCards] = useState<CardData[]>([])
 
-    async function handleSearch(query: Filter<CardData>) {
-        const new_cards: CardData[] = await fetchCards(query);
+    async function handleSearch(pipeline: Filter<CardData>[]) {
+        const new_cards: CardData[] = await fetchCards(pipeline);
         setCards(new_cards)
     }
 

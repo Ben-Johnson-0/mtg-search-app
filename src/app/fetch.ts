@@ -1,5 +1,6 @@
 'use server';
 import { MongoClient, Filter } from "mongodb";
+import { pipeline } from "stream";
 
 // Config
 const mongoIP = "192.168.1.75";
@@ -36,14 +37,14 @@ export type CardData = {
 // Connection URI
 const uri = `mongodb://${username}:${password}@${mongoIP}:${mongoPort}/?authSource=${authDb}`;
 
-export async function fetchCards(query: Filter<CardData>) {
+export async function fetchCards(pipeline: Filter<CardData>[]) {
   const client = new MongoClient(uri);
 
   try {
     await client.connect();
     const db = client.db(targetDb);
     const collection = db.collection<CardData>(collectionName);
-    const doc = await collection.find(query).toArray();
+    const doc = await collection.aggregate<CardData>(pipeline).toArray();
     return doc;
 
   } catch (err) {

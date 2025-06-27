@@ -181,11 +181,14 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
                 <h1 className="text-2xl font-bold">Search Parameters</h1>
                 <SearchParamEntry paramTitle="Card Name" paramId="name" inputType="text" defaultOp="$regex"/>
                 <SearchParamEntry paramTitle="Rules Text" paramId="oracle_text" inputType="text" defaultOp="$regex" />
-                <SearchParamEntry paramTitle="Expansion" paramId="expansion" inputType="text" defaultOp="$regex" />
                 <SearchParamEntry paramTitle="Colors" paramId="colors" inputType="text" defaultOp="$in" />
                 <SearchParamEntry paramTitle="Color Identity" paramId="color_identity" inputType="text" defaultOp="$in" />
                 <SearchParamEntry paramTitle="Types" paramId="type_line" inputType="text" defaultOp="$regex" />
                 <SearchParamEntry paramTitle="Mana Value" paramId="cmc" inputType="number" defaultOp="$eq" />
+                <SearchParamEntry paramTitle="Rarity" paramId="rarity" inputType="text" defaultOp="$eq" />
+                <SearchParamEntry paramTitle="Expansion/Set" paramId="set_name" inputType="text" defaultOp="$eq" />
+                <SearchParamEntry paramTitle="Flavor Text" paramId="flavor_text" inputType="text" defaultOp="$regex" />
+                <SearchParamEntry paramTitle="Artist" paramId="artist" inputType="text" defaultOp="$regex" />
                 <br/>
                 <button onClick={handleSearchClick} className="text-2xl font-bold">Search</button>
             </div>

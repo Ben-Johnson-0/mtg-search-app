@@ -72,12 +72,13 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
 
     function handleSearchClick() {
         // Aggregation pipeline
-        let pipeline = [];
-
-        const query: Filter<CardData> = {"$and":[], "$or":[]};
+        const pipeline = [];
+        const query: Filter<CardData> = {};
+        query.$and = [];
+        query.$or = [];
         
         for (const { field, operator, clause, value } of searchParams) {
-            let operator_subquery = {[operator]: value};
+            let operator_subquery: Filter<CardData> = {[operator]: value};
 
             // Make regex-based searches case-insensitive
             if (operator === "$regex") {

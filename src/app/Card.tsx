@@ -23,8 +23,6 @@ export default function Card({card}: {card:CardData}) {
         setImgIdx(nextIdx)
         setCurrentImage(card.image_uris[nextIdx].normal)
     }
-    function rotate(degree:number) {}
-
 
     return (
         <div className="relative inline-block min-w-[220px] min-h-[300px]">

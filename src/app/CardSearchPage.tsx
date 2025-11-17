@@ -10,8 +10,16 @@ export default function CardSearchPage() {
     const [cards, setCards] = useState<CardData[]>([])
 
     async function handleSearch(pipeline: Filter<CardData>[]) {
-        const new_cards: CardData[] = await fetchCards(pipeline);
-        setCards(new_cards)
+        const res = await fetch("api/cards", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(pipeline)
+        });
+
+        const newCards = await res.json();
+        setCards(newCards)
     }
 
     return (

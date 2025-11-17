@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Card from "./Card";
-import { type CardData } from "./fetch";
+import type { CardData } from "@/types/card";
 
 /*
  * Display widget for a group of cards

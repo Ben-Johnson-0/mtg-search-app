@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import MultiCardDisplay from "./MultiCardDisplay";
 import SearchGUI from "./SearchGUI"
-import { fetchCards, type CardData } from "./fetch"
+import type { CardData } from "@/types/card";
 import { Filter } from "mongodb";
 
 

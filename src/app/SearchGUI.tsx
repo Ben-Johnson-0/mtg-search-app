@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Filter } from "mongodb";
-import { type CardData } from "./fetch"
+import type { CardData } from "@/types/card";
 
 
 interface SearchParam {

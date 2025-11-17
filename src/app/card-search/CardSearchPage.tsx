@@ -1,9 +1,9 @@
 'use client';
 import { useState } from 'react';
+import { Filter } from "mongodb";
 import MultiCardDisplay from "./MultiCardDisplay";
 import SearchGUI from "./SearchGUI"
 import type { CardData } from "@/types/card";
-import { Filter } from "mongodb";
 
 
 export default function CardSearchPage() {

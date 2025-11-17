@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { type CardData } from "./fetch"
+import type { CardData } from "@/types/card";
 
 export default function Card({card}: {card:CardData}) {
 

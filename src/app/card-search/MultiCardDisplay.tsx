@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import Card from "./Card";
+import Card from "../components/Card";
 import type { CardData } from "@/types/card";
 
 /*

@@ -1,5 +1,5 @@
 // Home page
-import CardSearchPage from "./CardSearchPage";
+import CardSearchPage from "./card-search/CardSearchPage";
 
 export const metadata = {
   title: "MTG Search App",

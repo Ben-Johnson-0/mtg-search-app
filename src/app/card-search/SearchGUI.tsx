@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Filter } from "mongodb";
 import type { CardData } from "@/types/card";
-
+import { MoreInfo } from "../components/MoreInfo";
 
 interface SearchParam {
     field: string;
@@ -236,7 +236,13 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
     return (
         <div className={className}>
             <div>
-                <h1 className="text-2xl font-bold">Search Parameters</h1>
+                <h1 className="text-2xl font-bold">
+                    Search Parameters
+                    <MoreInfo 
+                        content= "Add search parameters to find cards that fit certain criteria. (i.e. Search for all blue creatures by adding 'U' or 'Blue' in Colors and 'Creature' in Types.)"
+                        position="bottom"
+                    />
+                </h1>
                 <SearchParamEntry paramTitle="Card Name" paramId="name" inputType="text" defaultOp="$regex"/>
                 <SearchParamEntry paramTitle="Rules Text" paramId="oracle_text" inputType="text" defaultOp="$regex" />
                 <SearchParamEntry paramTitle="Colors" paramId="colors" inputType="text" defaultOp="$in" />
@@ -248,14 +254,26 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
                 <SearchParamEntry paramTitle="Flavor Text" paramId="flavor_text" inputType="text" defaultOp="$regex" />
                 <SearchParamEntry paramTitle="Artist" paramId="artist" inputType="text" defaultOp="$regex" />
                 <br/>
-                <h1 className="text-2xl font-bold">Sort Order</h1>
+                <h1 className="text-2xl font-bold">
+                    Sort Order
+                    <MoreInfo
+                        content="Set the order that cards are shown in"
+                        position="bottom"
+                    />
+                </h1>
                 <SortOrderSelector />
                 <br/>
                 <button onClick={handleSearchClick} className="text-2xl font-bold">Search</button>
             </div>
             <br/>
             <div>
-                <h1 className="text-2xl font-bold">Current Parameters</h1>
+                <h1 className="text-2xl font-bold">
+                    Current Parameters
+                    <MoreInfo
+                        content="Search parameters that are currently set. Search clauses include one of the following AND, OR, or NOT. You can set these when adding a search criteria."
+                        position="bottom"
+                    />
+                </h1>
                 <ParameterDisplay />
             </div>
         </div>

@@ -239,7 +239,7 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
                 <h1 className="text-2xl font-bold">
                     Search Parameters
                     <MoreInfo 
-                        content= "Add search parameters to find cards that fit certain criteria. (i.e. Search for all blue creatures by adding 'U' or 'Blue' in Colors and 'Creature' in Types.)"
+                        content= "Add search parameters to find cards that fit certain criteria. Search clauses include one of the following AND, OR, or NOT. You can set these when adding a search criteria. (i.e. Search for all blue creatures by adding AND 'U' or 'Blue' in Colors and AND 'Creature' in Types.)"
                         position="bottom"
                     />
                 </h1>
@@ -270,7 +270,7 @@ export default function SearchGUI({ onSearch, className } : SearchGUIProps) {
                 <h1 className="text-2xl font-bold">
                     Current Parameters
                     <MoreInfo
-                        content="Search parameters that are currently set. Search clauses include one of the following AND, OR, or NOT. You can set these when adding a search criteria."
+                        content="Search parameters that are currently set. These are the criteria that will be used when searching."
                         position="bottom"
                     />
                 </h1>

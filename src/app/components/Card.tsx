@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { CardData } from "@/types/card";
-import Image from "next/image";
 
 export default function Card({card}: {card:CardData}) {
 
@@ -27,7 +26,7 @@ export default function Card({card}: {card:CardData}) {
 
     return (
         <div className="relative inline-block min-w-[220px] min-h-[300px]">
-            <Image 
+            <img 
                 src={currentImage}
                 alt={card.name}
                 className="rounded-[21px] w-full h-auto"
